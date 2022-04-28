@@ -1,33 +1,24 @@
-const express= require('express')
-const noticias = require('./mockup.js')
+const express= require('express');
 
-const app = express()
+const noticiasRoutes = require('./routes/noticias');
+const adminRoutes = require('./routes/admin');
 
-app.set('view engine','ejs')
-app.use(express.static('./views/public'))
+const db = require('./db/app');
+const port= process.env.PORT || 3000;
+
+const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.set('view engine','ejs');
+app.use(express.static('./views/public'));
+
+app.use(noticiasRoutes);
+app.use(adminRoutes);
 
 
-app.get('/',(req,res) =>{
-    res.render('home/index',{noticias:noticias.slice(0,3),title:'Home'})
-})
-
-
-app.get('/noticias',(req,res) =>{
-    res.render('noticias/noticias',{noticias:noticias, title:'Noticias'})
-})
-
-
-app.get('/noticia',(req,res) =>{
-    var id= req.query.id
-    res.render('noticias/noticia',{noticia:noticias[id],title:'Noticia'})
-})
-
-app.get('/admin',(req,res) =>{
-    res.render('admin/form_add_noticia',{title:'Formulário'})
-})
-
-app.listen(3000,() =>{
-    console.log('Escutando na porta 3000 com Express')
-    console.log('Pressione CTRL+C para encerrar o servidor')
-})
+app.listen(port,() =>{
+    console.log('Escutando na porta 3000 com Express');
+});
 
